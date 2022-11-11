@@ -2,15 +2,20 @@ const express = require('express');
 const fs = require('fs');
 const app = express();
 const cors = require('cors');
+const bodyParser = require('body-parser');
+const path = require('path');
 const port = process.env.PORT || 8000;
 
-app.use(cors())
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(cors());
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
+    app.use(express.static("./"));
+    res.sendFile(path.join(__dirname + '/index.html'));
 });
 
-app.get("/video", function(req,res){
+app.get("/video",  function(req,res){
     const range = req.headers.range;
     if(!range){
     res.status(400).send("Request does not contain a range header");
